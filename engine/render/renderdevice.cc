@@ -26,8 +26,8 @@ Render::ShaderProgramId staticShadowProgram;
 Render::ShaderProgramId skyboxProgram;
 Render::ShaderProgramId lightCullingProgram;
 
-GLuint fullscreenQuadVB;
-GLuint fullscreenQuadVAO;
+static GLuint fullscreenQuadVB;
+static GLuint fullscreenQuadVAO;
 
 //------------------------------------------------------------------------------
 /**
@@ -47,9 +47,10 @@ void SetupFullscreenQuad()
         -1.0f, -3.0f, 1.0f
     };
     
-    glGenBuffers(1, &fullscreenQuadVB);
     glGenVertexArrays(1, &fullscreenQuadVAO);
     glBindVertexArray(fullscreenQuadVAO);
+    
+    glGenBuffers(1, &fullscreenQuadVB);
     glBindBuffer(GL_ARRAY_BUFFER, fullscreenQuadVB);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verts), (void*)&verts, GL_STATIC_DRAW);
     
@@ -68,7 +69,7 @@ void RenderDevice::Init()
     TextureResource::Create();
     
     SetupFullscreenQuad();
-    
+
     // Shaders
     {
         auto vs = Render::ShaderResource::LoadShader(Render::ShaderResource::ShaderType::VERTEXSHADER, "shd/vs_static.vs");
@@ -227,8 +228,7 @@ RenderDevice::StaticGeometryPrepass()
 {
     Camera* const mainCamera = CameraManager::GetCamera(CAMERA_MAIN);
     glBindFramebuffer(GL_FRAMEBUFFER, Instance()->forwardFrameBuffer);
-    glClearColor(255.0f, 0, 0, 1);
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -314,13 +314,11 @@ RenderDevice::LightCullingPass()
 */
 void
 RenderDevice::StaticForwardPass()
-{   
+{
     glBindFramebuffer(GL_FRAMEBUFFER, Instance()->forwardFrameBuffer);
     //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    glClear(GL_DEPTH_BUFFER_BIT);
-
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_EQUAL);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
@@ -412,6 +410,7 @@ RenderDevice::SkyboxPass()
     glUniformMatrix4fv(2, 1, false, &camera->invView[0][0]);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     glDepthFunc(GL_LESS);
+    glBindVertexArray(0);
 }
 
 //------------------------------------------------------------------------------

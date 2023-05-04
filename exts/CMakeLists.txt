@@ -56,8 +56,22 @@ ADD_LIBRARY(imgui STATIC
 			)
 			
 
+
+ADD_LIBRARY(nanovg STATIC
+				nanovg/src/nanovg.c
+				nanovg/src/nanovg.h
+				nanovg/src/nanovg_gl.h
+				nanovg/src/nanovg_gl_utils.h
+				nanovg/src/stb_truetype.h
+				nanovg/src/stb_image.h
+				nanovg/src/fontstash.h
+			)
+TARGET_LINK_LIBRARIES(nanovg PUBLIC exts)
+TARGET_INCLUDE_DIRECTORIES(nanovg PUBLIC nanovg/src)
+SET_TARGET_PROPERTIES(nanovg PROPERTIES FOLDER "exts/nanovg")
+
 TARGET_LINK_LIBRARIES(imgui PUBLIC exts)
 TARGET_INCLUDE_DIRECTORIES(imgui PUBLIC imgui)
 SET_TARGET_PROPERTIES(imgui PROPERTIES FOLDER "exts/imgui")
 
-TARGET_LINK_LIBRARIES(exts INTERFACE imgui)
+TARGET_LINK_LIBRARIES(exts INTERFACE imgui nanovg)

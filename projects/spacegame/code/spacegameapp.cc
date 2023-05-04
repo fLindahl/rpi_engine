@@ -65,6 +65,10 @@ SpaceGameApp::Open()
 		{
 			this->RenderUI();
 		});
+        this->window->SetNanoFunc([this](NVGcontext* vg)
+        {
+            this->RenderNanoVG(vg);
+        });
         
         return true;
 	}
@@ -245,6 +249,36 @@ SpaceGameApp::RenderUI()
 
         //Debug::DispatchDebugTextDrawing();
 	}
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+void
+SpaceGameApp::RenderNanoVG(NVGcontext* vg)
+{
+    nvgSave(vg);
+
+    nvgBeginPath(vg);
+    nvgCircle(vg, 600, 100, 50);
+    NVGpaint paint;
+    paint = nvgLinearGradient(vg, 600, 100, 650, 150, nvgRGBA(255, 0, 0, 255), nvgRGBA(0, 255, 0, 255));
+    nvgFillPaint(vg, paint);
+    nvgFill(vg);
+
+
+
+    // Header
+    nvgBeginPath(vg);
+    nvgStrokeColor(vg, nvgRGBA(0, 0, 0, 32));
+    nvgStroke(vg);
+
+    nvgFontSize(vg, 16.0f);
+    nvgFontFace(vg, "sans");
+    nvgFillColor(vg, nvgRGBA(255, 255, 255, 128));
+    nvgText(vg, 0, 30, "Testing, testing... Everything seems to be in order.", NULL);
+
+    nvgRestore(vg);
 }
 
 } // namespace Game

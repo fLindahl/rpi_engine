@@ -4,6 +4,15 @@
 //------------------------------------------------------------------------------
 #include "config.h"
 #include "window.h"
+
+#define GLFW_INCLUDE_ES3
+#define GLFW_INCLUDE_GLEXT
+#include <GLFW/glfw3.h>
+#include "nanovg.h"
+#define NANOVG_GLES3_IMPLEMENTATION
+#include "nanovg_gl.h"
+#include "nanovg_gl_utils.h"
+
 #include <imgui.h>
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"
@@ -315,6 +324,13 @@ Window::Open()
 	glfwSetCharCallback(window, Window::StaticCharCallback);
 	glfwSetDropCallback(window, Window::StaticDropCallback);
 
+	// Setup nanovg
+	int nvgFlags = NVG_ANTIALIAS | NVG_STENCIL_STROKES;
+#ifdef _DEBUG
+	nvgFlags |= NVG_DEBUG;
+#endif
+	this->vg = nvgCreateGLES3(nvgFlags);
+	assert(this->vg != NULL); // Make sure nanovg is initialized
 
 	// setup imgui implementation
 	ImGui::CreateContext();
@@ -333,8 +349,10 @@ Window::Open()
 	config.OversampleH = 3;
 	config.OversampleV = 1;
 #if _WIN32
+	int nvgFontId = nvgCreateFont(vg, "sans", "c:/windows/fonts/tahoma.ttf");
 	ImFont* font = io.Fonts->AddFontFromFileTTF("c:/windows/fonts/tahoma.ttf", 14, &config);
 #else
+	int nvgFontId = nvgCreateFont(vg, "sans", "/usr/share/fonts/truetype/freefont/FreeSans.ttf");
 	ImFont* font = io.Fonts->AddFontFromFileTTF("/usr/share/fonts/truetype/freefont/FreeSans.ttf", 18, &config);
 #endif
 
@@ -368,6 +386,7 @@ Window::Close()
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
+		nvgDeleteGLES3(this->vg);
 		glfwTerminate();
 	}
 }
@@ -401,6 +420,23 @@ Window::SwapBuffers()
 	{
 		//ImGui_ImplOpenGL3_NewFrame();
 		//ImGui_ImplGlfw_NewFrame();
+
+		if (nullptr != this->nanoFunc)
+		{
+			int32 fbWidth, fbHeight;
+			glClear(GL_STENCIL_BUFFER_BIT);
+			glfwGetWindowSize(this->window, &this->width, &this->height);
+			glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+			
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glEnable(GL_CULL_FACE);
+			glDisable(GL_DEPTH_TEST);
+
+			nvgBeginFrame(this->vg, this->width, this->height, (float)fbWidth / (float)this->width);
+			this->nanoFunc(this->vg);
+			nvgEndFrame(this->vg);
+		}
 
 		//ImGui::NewFrame();
 		if (nullptr != this->uiFunc)
