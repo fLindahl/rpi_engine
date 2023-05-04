@@ -53,7 +53,7 @@ static GLuint workGroupsY = 0;
 
 static GLuint globalShadowMap;
 static GLuint globalShadowFrameBuffer;
-const unsigned int shadowMapSize = 4096;
+const unsigned int shadowMapSize = 1024;
 
 static Core::CVar* r_draw_light_spheres = nullptr;
 static Core::CVar* r_draw_light_sphere_id = nullptr;
@@ -85,7 +85,7 @@ Initialize()
 
 	glGenFramebuffers(1, &globalShadowFrameBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, globalShadowFrameBuffer);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, globalShadowMap, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, globalShadowMap, 0);
 	//glDrawBuffer(GL_NONE);
 	//glReadBuffer(GL_NONE);
 
@@ -107,7 +107,7 @@ void
 UpdateWorkGroups(uint resolutionWidth, uint resolutionHeight)
 {
 	// Define work group sizes in x and y direction based off screen size and tile size (in pixels)
-	const int TILE_SIZE = 32;
+	const int TILE_SIZE = 8;
 	workGroupsX = (resolutionWidth + (resolutionWidth % TILE_SIZE)) / TILE_SIZE;
 	workGroupsY = (resolutionHeight + (resolutionHeight % TILE_SIZE)) / TILE_SIZE;
 

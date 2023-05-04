@@ -79,13 +79,11 @@ GenerateLineBuffer()
 Grid::Grid() : lineBuffer(0)
 {
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	GLint length = static_cast<GLint>(std::strlen(vs));
-	glShaderSource(vertexShader, 1, &vs, &length);
+	glShaderSource(vertexShader, 1, &vs, 0);
 	glCompileShader(vertexShader);
 
 	GLuint pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
-	length = static_cast<GLint>(std::strlen(ps));
-	glShaderSource(pixelShader, 1, &ps, &length);
+	glShaderSource(pixelShader, 1, &ps, 0);
 	glCompileShader(pixelShader);
 
 	this->program = glCreateProgram();

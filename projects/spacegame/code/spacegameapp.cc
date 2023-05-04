@@ -51,7 +51,7 @@ SpaceGameApp::Open()
 {
 	App::Open();
 	this->window = new Display::Window;
-    this->window->SetSize(2500, 2000);
+    this->window->SetSize(1280, 720);
 
     if (this->window->Open())
 	{
@@ -105,7 +105,7 @@ SpaceGameApp::Run()
     std::vector<std::tuple<ModelId, Physics::ColliderId, glm::mat4>> asteroids;
     
     // Setup asteroids near
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 25; i++)
     {
         std::tuple<ModelId, Physics::ColliderId, glm::mat4> asteroid;
         size_t resourceIndex = (size_t)(Core::FastRandom() % 6);
@@ -125,7 +125,7 @@ SpaceGameApp::Run()
     }
 
     // Setup asteroids far
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < 20; i++)
     {
         std::tuple<ModelId, Physics::ColliderId, glm::mat4> asteroid;
         size_t resourceIndex = (size_t)(Core::FastRandom() % 6);
@@ -159,7 +159,7 @@ SpaceGameApp::Run()
     
     Input::Keyboard* kbd = Input::GetDefaultKeyboard();
 
-    const int numLights = 40;
+    const int numLights = 4;
     Render::PointLightId lights[numLights];
     // Setup lights
     for (int i = 0; i < numLights; i++)
@@ -202,9 +202,6 @@ SpaceGameApp::Run()
         ship.Update(dt);
         ship.CheckCollisions();
 
-        // Draw some debug text
-        Debug::DrawDebugText("FOOBAR", glm::vec3(0), {1,0,0,1});
-
         // Store all drawcalls in the render device
         for (auto const& asteroid : asteroids)
         {
@@ -244,20 +241,9 @@ SpaceGameApp::RenderUI()
 {
 	if (this->window->IsOpen())
 	{
-        ImGui::Begin("Debug");
-        Core::CVar* r_draw_light_spheres = Core::CVarGet("r_draw_light_spheres");
-        int drawLightSpheres = Core::CVarReadInt(r_draw_light_spheres);
-        if (ImGui::Checkbox("Draw Light Spheres", (bool*)&drawLightSpheres))
-            Core::CVarWriteInt(r_draw_light_spheres, drawLightSpheres);
         
-        Core::CVar* r_draw_light_sphere_id = Core::CVarGet("r_draw_light_sphere_id");
-        int lightSphereId = Core::CVarReadInt(r_draw_light_sphere_id);
-        if (ImGui::InputInt("LightSphereId", (int*)&lightSphereId))
-            Core::CVarWriteInt(r_draw_light_sphere_id, lightSphereId);
-        
-        ImGui::End();
 
-        Debug::DispatchDebugTextDrawing();
+        //Debug::DispatchDebugTextDrawing();
 	}
 }
 

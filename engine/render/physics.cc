@@ -395,11 +395,11 @@ LoadFromIndexBuffer(fx::gltf::Document const& doc, ColliderMesh* mesh)
 
     // bounding sphere radius is max of x, y or z from aabb
     mesh->bSphereRadius = vbAccessor.max[0];
-    mesh->bSphereRadius = std::max(mesh->bSphereRadius, vbAccessor.max[1]);
-    mesh->bSphereRadius = std::max(mesh->bSphereRadius, vbAccessor.max[2]);
-    mesh->bSphereRadius = std::max(mesh->bSphereRadius, fabs(vbAccessor.min[0]));
-    mesh->bSphereRadius = std::max(mesh->bSphereRadius, fabs(vbAccessor.min[1]));
-    mesh->bSphereRadius = std::max(mesh->bSphereRadius, fabs(vbAccessor.min[2]));
+    mesh->bSphereRadius = std::max(mesh->bSphereRadius, float(vbAccessor.max[1]));
+    mesh->bSphereRadius = std::max(mesh->bSphereRadius, float(vbAccessor.max[2]));
+    mesh->bSphereRadius = std::max(mesh->bSphereRadius, float(fabs(vbAccessor.min[0])));
+    mesh->bSphereRadius = std::max(mesh->bSphereRadius, float(fabs(vbAccessor.min[1])));
+    mesh->bSphereRadius = std::max(mesh->bSphereRadius, float(fabs(vbAccessor.min[2])));
 }
 
 

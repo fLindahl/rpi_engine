@@ -1,4 +1,4 @@
-#define TILE_SIZE 32
+#define TILE_SIZE 8
 
 struct VisibleIndex 
 {

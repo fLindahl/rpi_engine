@@ -33,8 +33,8 @@ GLuint fullscreenQuadVAO;
 /**
 */
 RenderDevice::RenderDevice() :
-    frameSizeW(1024),
-    frameSizeH(1024)
+    frameSizeW(320),
+    frameSizeH(180)
 {
     // empty
 }
@@ -102,8 +102,8 @@ void RenderDevice::Init()
     GLint dims[4] = { 0 };
     glGetIntegerv(GL_VIEWPORT, dims);
     // default viewport extents
-    GLint fbWidth = dims[2];
-    GLint fbHeight = dims[3];
+    GLint fbWidth = Instance()->frameSizeW;//dims[2];
+    GLint fbHeight = Instance()->frameSizeH;//dims[3];
     
     // Setup drawing buffers
     glGenFramebuffers(1, &Instance()->forwardFrameBuffer);
@@ -127,8 +127,8 @@ void RenderDevice::Init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, Instance()->renderTargets.light, 0);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, Instance()->depthStencilBuffer, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Instance()->renderTargets.light, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, Instance()->depthStencilBuffer, 0);
     
     const GLenum drawbuffers[1] = { GL_COLOR_ATTACHMENT0 };
     glDrawBuffers(1, drawbuffers);
@@ -316,8 +316,9 @@ void
 RenderDevice::StaticForwardPass()
 {   
     glBindFramebuffer(GL_FRAMEBUFFER, Instance()->forwardFrameBuffer);
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
 
     glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
@@ -502,8 +503,9 @@ Render::RenderDevice::FinalizePass(Display::Window* wnd)
     int w, h;
     wnd->GetSize(w, h);
     glViewport(0, 0, w, h);
-
-    glBlitNamedFramebuffer(this->forwardFrameBuffer, 0, 0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, this->forwardFrameBuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glBlitFramebuffer(0, 0, frameSizeW, frameSizeH, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -522,7 +524,9 @@ RenderDevice::Render(Display::Window* wnd, float dt)
 
     // Begin depth prepass renderpass
     int w, h;
-    wnd->GetSize(w, h);
+    //wnd->GetSize(w, h);
+    w = Instance()->frameSizeW;
+    h = Instance()->frameSizeH;
     glViewport(0, 0, w, h);
 
     Instance()->StaticGeometryPrepass();
@@ -546,7 +550,7 @@ RenderDevice::Render(Display::Window* wnd, float dt)
         Instance()->SkyboxPass();
     }
     
-    Instance()->ParticlePass(dt);
+    //Instance()->ParticlePass(dt);
 
     // end forward shading renderpass
 

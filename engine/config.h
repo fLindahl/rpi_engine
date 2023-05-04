@@ -10,12 +10,12 @@
 */
 #ifdef __WIN32__
 #include "win32/pch.h"
+#include <xmmintrin.h>
 #endif
 #define NOMINMAX
 
 #include <stdint.h>
 #include <atomic>
-#include <xmmintrin.h>
 #include <assert.h>
 #include <vec3.hpp> // glm::vec3
 #include <vec4.hpp> // glm::vec4

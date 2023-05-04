@@ -8,10 +8,10 @@ FILE(GLOB project_sources code/*.cc)
 
 SET(files_project ${project_headers} ${project_sources})
 SET(files_proto)
-flat_compile(
-	test.fbs
-	# add more flatbuffer files here
-) 
+#flat_compile(
+#	test.fbs
+#	# add more flatbuffer files here
+#) 
 
 SOURCE_GROUP("spacegame" FILES ${files_project})
 

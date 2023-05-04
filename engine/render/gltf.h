@@ -4,6 +4,8 @@
 // See the LICENSE file in the repo root for full license information.
 // ------------------------------------------------------------
 #pragma once
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnarrowing"
 
 #include <array>
 #include <cstring>
@@ -324,7 +326,7 @@ namespace gltf
         };
 
         FX_GLTF_INLINE_CONSTEXPR uint32_t DefaultMaxBufferCount = 8;
-        FX_GLTF_INLINE_CONSTEXPR uint32_t DefaultMaxMemoryAllocation = 3048 * 1024 * 1024;
+        FX_GLTF_INLINE_CONSTEXPR uint32_t DefaultMaxMemoryAllocation = 1048 * 1024 * 1024;
         FX_GLTF_INLINE_CONSTEXPR std::size_t HeaderSize{ sizeof(GLBHeader) };
         FX_GLTF_INLINE_CONSTEXPR std::size_t ChunkHeaderSize{ sizeof(ChunkHeader) };
         FX_GLTF_INLINE_CONSTEXPR uint32_t GLBHeaderMagic = 0x46546c67u;
@@ -2015,3 +2017,5 @@ inline void FormatException(std::string & output, std::exception const & ex, int
 #undef FX_GLTF_INLINE_CONSTEXPR
 #undef FX_GLTF_EXPERIMENTAL_FILESYSTEM
 #undef FX_GLTF_FILESYSTEM
+
+#pragma GCC diagnostic pop

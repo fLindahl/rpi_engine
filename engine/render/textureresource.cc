@@ -221,9 +221,9 @@ TextureResource::LoadTextureFromMemory(TextureLoadInfo const& info)
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
             if (img.channels == 3)
-                glTexImage2D(GL_TEXTURE_2D, 0, sRGB ? GL_SRGB : GL_RGB, img.w, img.h, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data.get());
+                glTexImage2D(GL_TEXTURE_2D, 0, sRGB ? GL_RGB8 : GL_RGB8, img.w, img.h, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data.get());
             else if (img.channels == 4)
-                glTexImage2D(GL_TEXTURE_2D, 0, sRGB ? GL_SRGB_ALPHA : GL_RGBA, img.w, img.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.data.get());
+                glTexImage2D(GL_TEXTURE_2D, 0, sRGB ? GL_SRGB8_ALPHA8 : GL_RGBA8, img.w, img.h, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.data.get());
             
             glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -356,7 +356,7 @@ TextureResource::LoadCubemap(std::string const& name, std::vector<const char*> c
         assert(data);
         
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-            0, sRGB ? GL_SRGB : GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            0, sRGB ? GL_SRGB8 : GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data
         );
         stbi_image_free(data);
     }

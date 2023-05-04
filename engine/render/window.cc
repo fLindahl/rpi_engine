@@ -239,9 +239,9 @@ Window::Open()
 	}
 
 	// setup window
+#ifdef _DEBUG
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-	glEnable(GL_DEBUG_OUTPUT);
-	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+#endif
 	glfwWindowHint(GLFW_RED_BITS, 8);
 	glfwWindowHint(GLFW_GREEN_BITS, 8);
 	glfwWindowHint(GLFW_BLUE_BITS, 8);
@@ -253,11 +253,7 @@ Window::Open()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-
-#ifdef _WIN32
-	// Apparently, unless we do this on windows, we'll run into some issue with glew and some function pointers won't be loaded.
 	glewExperimental = true;
-#endif
 
 	// open window
 	this->window = glfwCreateWindow(this->width, this->height, this->title.c_str(), nullptr, nullptr);
@@ -286,20 +282,21 @@ Window::Open()
 			this->window = nullptr;
 			return false;
 		}
-
+#ifdef _DEBUG
 		// setup debug callback
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(GLDebugCallback, NULL);
 		GLuint unusedIds;
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, &unusedIds, true);
+#endif
 
 		// setup stuff
 		//glEnable(GL_FRAMEBUFFER_SRGB);
-		glEnable(GL_MULTISAMPLE);
+		//glEnable(GL_MULTISAMPLE);
 
 		// disable vsync
-		glfwSwapInterval(0);
+		//glfwSwapInterval(0);
 
 		// setup viewport
 		glViewport(0, 0, this->width, this->height);
@@ -406,11 +403,13 @@ Window::SwapBuffers()
 		//ImGui_ImplGlfw_NewFrame();
 
 		//ImGui::NewFrame();
-		//if (nullptr != this->uiFunc)
-		//	this->uiFunc();
-		//
+		if (nullptr != this->uiFunc)
+			this->uiFunc();
+		
 		//ImGui::Render();
 		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		glFlush();
+		glFinish();
 		glfwSwapBuffers(this->window);
 	}
 }

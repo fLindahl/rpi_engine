@@ -6,6 +6,7 @@ namespace Render
 {
 	void ParticleSystem::Initialize()
 	{
+        return;
         auto vs = Render::ShaderResource::LoadShader(Render::ShaderResource::ShaderType::VERTEXSHADER, "shd/vs_particles_bufstorage.vs");
         auto fs = Render::ShaderResource::LoadShader(Render::ShaderResource::ShaderType::FRAGMENTSHADER, "shd/fs_particles_bufstorage.fs");
         this->particleShaderId = Render::ShaderResource::CompileShaderProgram({ vs, fs });
@@ -16,6 +17,7 @@ namespace Render
     
     ParticleEmitter::ParticleEmitter(uint32_t numParticles)
     {
+        return;
         data.numParticles = numParticles;
         glGenBuffers(2, this->bufPositions);
         glGenBuffers(2, this->bufVelocities);
@@ -37,6 +39,7 @@ namespace Render
 
     ParticleEmitter::~ParticleEmitter()
     {
+        return;
         glDeleteBuffers(2, this->bufPositions);
         glDeleteBuffers(2, this->bufVelocities);
         glDeleteBuffers(2, this->bufColors);
