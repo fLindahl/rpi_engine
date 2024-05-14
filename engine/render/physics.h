@@ -84,6 +84,7 @@ struct RaycastPayload
     bool hit = false;
     float hitDistance = 0;
     glm::vec3 hitPoint;
+    glm::vec3 hitNormal;
     ColliderId collider;
 };
 
