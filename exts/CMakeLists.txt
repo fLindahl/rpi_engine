@@ -4,13 +4,7 @@
 
 ADD_LIBRARY(exts INTERFACE)
 
-ADD_SUBDIRECTORY(flatbuffers)
-
 ADD_SUBDIRECTORY(glm)
-ADD_SUBDIRECTORY(enet)
-SET_TARGET_PROPERTIES(enet PROPERTIES FOLDER "exts/enet")
-TARGET_INCLUDE_DIRECTORIES(exts INTERFACE enet/include)
-TARGET_INCLUDE_DIRECTORIES(exts INTERFACE flatbuffers/include)
 
 if(WIN32)
 	SET(SOLOUD_BACKEND_WINMM ON)
@@ -55,8 +49,6 @@ ADD_LIBRARY(imgui STATIC
 			imgui/imstb_truetype.h
 			)
 			
-
-
 ADD_LIBRARY(nanovg STATIC
 				nanovg/src/nanovg.c
 				nanovg/src/nanovg.h
